@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_shamo_provider/pages/sign_in_page.dart';
 import '../utils/theme.dart';
 
 class SplashPage extends StatefulWidget {
