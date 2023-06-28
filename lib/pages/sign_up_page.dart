@@ -1,11 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shamo_provider/pages/widget/custom_loading_button.dart';
+import 'package:flutter_shamo_provider/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 import '../utils/theme.dart';
 
-class SignUpPage extends StatelessWidget {
+class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
   @override
+  State<SignUpPage> createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  TextEditingController nameC = TextEditingController();
+  TextEditingController usernameC = TextEditingController();
+  TextEditingController emailC = TextEditingController();
+  TextEditingController passwordC = TextEditingController();
+
+  late bool isLoading = false;
+
+  @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+
+    handleSignUp() async {
+      setState(() {
+        isLoading = !isLoading;
+      });
+
+      if (await authProvider.register(
+        name: nameC.text,
+        username: usernameC.text,
+        email: emailC.text,
+        password: passwordC.text,
+      )) {
+        // ignore: use_build_context_synchronously
+        setState(() {
+          isLoading = !isLoading;
+        });
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+      } else {
+        setState(() {
+          isLoading = !isLoading;
+        });
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: alertColor,
+            content: Text(
+              "Gagal Register!",
+              style: whitePrimaryTextStyle,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+      }
+    }
+
     Widget header() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,6 +113,7 @@ class SignUpPage extends StatelessWidget {
                   Expanded(
                     child: TextFormField(
                       style: primaryTextStyle,
+                      controller: nameC,
                       decoration: InputDecoration.collapsed(
                         hintText: 'Your Full Name',
                         hintStyle: greyTextStyle,
@@ -109,6 +161,7 @@ class SignUpPage extends StatelessWidget {
                   Expanded(
                     child: TextFormField(
                       style: primaryTextStyle,
+                      controller: usernameC,
                       decoration: InputDecoration.collapsed(
                         hintText: 'Your Username',
                         hintStyle: greyTextStyle,
@@ -156,6 +209,7 @@ class SignUpPage extends StatelessWidget {
                   Expanded(
                     child: TextFormField(
                       style: primaryTextStyle,
+                      controller: emailC,
                       decoration: InputDecoration.collapsed(
                         hintText: 'Your Email Address',
                         hintStyle: greyTextStyle,
@@ -209,6 +263,8 @@ class SignUpPage extends StatelessWidget {
                   Expanded(
                     child: TextFormField(
                       style: primaryTextStyle,
+                      controller: passwordC,
+                      obscureText: true,
                       decoration: InputDecoration.collapsed(
                         hintText: 'Your Password',
                         hintStyle: greyTextStyle,
@@ -235,9 +291,11 @@ class SignUpPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-          onPressed: () {},
+          onPressed: () {
+            handleSignUp();
+          },
           child: Text(
-            'Sign In',
+            'Sign Up',
             style: whitePrimaryTextStyle.copyWith(
               fontSize: 16,
               fontWeight: medium,
@@ -288,7 +346,7 @@ class SignUpPage extends StatelessWidget {
               usernameInput(),
               emailInput(),
               passwordInput(),
-              buttonSubmit(),
+              isLoading ? const CustomLoadingButton() : buttonSubmit(),
               const Spacer(),
               footer()
             ],

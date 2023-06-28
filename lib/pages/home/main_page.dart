@@ -30,14 +30,22 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
+  changeBackground() {
+    if (currentIndex == 0) {
+      return backgroundColor1;
+    }
+    return backgroundColor3;
+  }
+
   @override
   Widget build(BuildContext context) {
-    print("ini current index : $currentIndex");
     Widget cartButton() {
       return FloatingActionButton(
         shape: const CircleBorder(),
         backgroundColor: secondaryColor,
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, '/cart');
+        },
         child: Image.asset(
           'assets/icon_cart.png',
           width: 20,
@@ -57,7 +65,7 @@ class _MainPageState extends State<MainPage> {
           notchMargin: 10.0,
           clipBehavior: Clip.antiAlias,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             height: 75,
             child: Row(
               mainAxisSize: MainAxisSize.max,
@@ -78,7 +86,6 @@ class _MainPageState extends State<MainPage> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    print("ini chat");
                     setState(() {
                       currentIndex = 1;
                     });
@@ -95,7 +102,6 @@ class _MainPageState extends State<MainPage> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    print("ini wishlist");
                     setState(() {
                       currentIndex = 2;
                     });
@@ -109,7 +115,6 @@ class _MainPageState extends State<MainPage> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    print("ini profile");
                     setState(() {
                       currentIndex = 3;
                     });
@@ -130,7 +135,7 @@ class _MainPageState extends State<MainPage> {
     }
 
     return Scaffold(
-      backgroundColor: backgroundColor1,
+      backgroundColor: changeBackground(),
       body: body(),
       floatingActionButton: cartButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

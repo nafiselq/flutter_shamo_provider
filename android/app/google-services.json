@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "93419069897",
+    "project_id": "chat-ecommerce-2688a",
+    "storage_bucket": "chat-ecommerce-2688a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:93419069897:android:2637713bf8203fdbd84818",
+        "android_client_info": {
+          "package_name": "com.example.flutter_shamo_provider"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "93419069897-np3i7vpsl92sf1il5du15m2vln6altes.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCApiI5h3yZVVlOMFAQ5ERJOShMR4VL5Ao"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "93419069897-np3i7vpsl92sf1il5du15m2vln6altes.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

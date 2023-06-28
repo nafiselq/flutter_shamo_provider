@@ -1,11 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shamo_provider/data/models/user_model.dart';
+import 'package:flutter_shamo_provider/pages/widget/custom_loading_button.dart';
+import 'package:flutter_shamo_provider/providers/auth_provider.dart';
+import 'package:flutter_shamo_provider/providers/preferences_auth_provider.dart';
+import 'package:provider/provider.dart';
 import '../utils/theme.dart';
 
-class SignInPage extends StatelessWidget {
+class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
 
   @override
+  State<SignInPage> createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  TextEditingController emailC = TextEditingController();
+  TextEditingController passwordC = TextEditingController();
+  late bool isLoading = false;
+  @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+
+    login() async {
+      setState(() {
+        isLoading = !isLoading;
+      });
+      if (await authProvider.login(
+        email: emailC.text,
+        password: passwordC.text,
+      )) {
+        setState(() {
+          isLoading = !isLoading;
+        });
+        print("auth provider login : ${authProvider.user?.toJson()}");
+        if (authProvider.user != null) {
+          UserModel userModel = authProvider.user!;
+          context.read<PreferencesAuthProvider>().setUser(userModel);
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        }
+      } else {
+        setState(() {
+          isLoading = !isLoading;
+        });
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: alertColor,
+            content: Text(
+              "Gagal Login!",
+              style: whitePrimaryTextStyle,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+      }
+    }
+
     Widget header() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,6 +113,7 @@ class SignInPage extends StatelessWidget {
                   Expanded(
                     child: TextFormField(
                       style: primaryTextStyle,
+                      controller: emailC,
                       decoration: InputDecoration.collapsed(
                         hintText: 'Your Email Address',
                         hintStyle: greyTextStyle,
@@ -117,6 +168,8 @@ class SignInPage extends StatelessWidget {
                   Expanded(
                     child: TextFormField(
                       style: primaryTextStyle,
+                      obscureText: true,
+                      controller: passwordC,
                       decoration: InputDecoration.collapsed(
                         hintText: 'Your Password',
                         hintStyle: greyTextStyle,
@@ -144,7 +197,7 @@ class SignInPage extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            Navigator.pushNamed(context, '/home');
+            login();
           },
           child: Text(
             'Sign In',
@@ -196,7 +249,7 @@ class SignInPage extends StatelessWidget {
               header(),
               emailInput(),
               passwordInput(),
-              buttonSubmit(),
+              isLoading ? const CustomLoadingButton() : buttonSubmit(),
               const Spacer(),
               footer()
             ],
